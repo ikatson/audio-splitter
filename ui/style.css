@@ -1,0 +1,76 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f5f6f8;
+  --text: #1c202c;
+  --muted: #5d6475;
+  --field: #ffffff;
+  --border: #c9cdd6;
+  --accent: #14806a;
+  --accent-text: #ffffff;
+  --track: #dfe2e8;
+  --error: #b3261e;
+  --viz-low: #14806a;
+  --viz-mid: #2f9fb0;
+  --viz-high: #6a5acd;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c202c;
+    --text: #e8eaf0;
+    --muted: #a0a7b8;
+    --field: #282d3b;
+    --border: #434a5c;
+    --accent: #5ec8aa;
+    --accent-text: #10231e;
+    --track: #343a4a;
+    --error: #f2968f;
+    --viz-low: #5ec8aa;
+    --viz-mid: #62b6e8;
+    --viz-high: #b49cff;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.4 "Segoe UI", system-ui, sans-serif;
+}
+
+main { flex: none; width: 100%; max-width: 560px; margin: 0 auto; padding: 20px 20px 8px; }
+#spectrum { flex: 1; display: block; width: 100%; min-height: 0; padding: 0 12px; }
+
+label { display: block; margin-top: 16px; }
+label:first-child { margin-top: 0; }
+label span { display: block; margin-bottom: 4px; font-weight: 600; }
+
+select, button {
+  font: inherit;
+  color: inherit;
+  background: var(--field);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 10px;
+}
+
+select { width: 100%; }
+button { cursor: pointer; }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); font-weight: 600; min-width: 90px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.gain { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+.gain input { flex: 1; min-width: 0; accent-color: var(--accent); }
+.gain input:disabled { opacity: 0.4; }
+.gain output { width: 52px; text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12px; }
+
+.info { min-height: 1.4em; margin: 4px 0 0; color: var(--muted); font-size: 12px; }
+.info.error, #message.error { color: var(--error); }
+
+.actions { display: flex; gap: 8px; margin-top: 20px; }
+#message { min-height: 1.4em; margin: 12px 0 0; color: var(--muted); }

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Audio Splitter</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <label>
+      <span>Virtual output (set this as the Windows output)</span>
+      <select id="source"></select>
+    </label>
+
+    <label>
+      <span>Output 1</span>
+      <select id="out1"></select>
+    </label>
+    <div class="gain">
+      <input id="out1-gain" type="range" min="-40" max="12" step="1" value="0" aria-label="Output 1 volume">
+      <output id="out1-gain-label" for="out1-gain">0 dB</output>
+    </div>
+    <p id="out1-info" class="info"></p>
+
+    <label>
+      <span>Output 2</span>
+      <select id="out2"></select>
+    </label>
+    <div class="gain">
+      <input id="out2-gain" type="range" min="-40" max="12" step="1" value="0" aria-label="Output 2 volume">
+      <output id="out2-gain-label" for="out2-gain">0 dB</output>
+    </div>
+    <p id="out2-info" class="info"></p>
+
+    <div class="actions">
+      <button id="toggle" class="primary">Start</button>
+      <button id="refresh">Refresh devices</button>
+    </div>
+    <p id="message" role="status"></p>
+  </main>
+  <canvas id="spectrum" role="img" aria-label="Frequency spectrum of the audio currently playing"></canvas>
+  <script src="spectrum.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
