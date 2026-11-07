@@ -1,0 +1,73 @@
+# Builds the Windows installer and standalone exe, and publishes them as a
+# GitHub release. Runs when a version tag is pushed:
+#
+#   git tag v0.2.0 && git push origin v0.2.0
+#
+# The tag must match the version in src-tauri/tauri.conf.json.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the tag matches the app version
+        run: |
+          version=$(jq -r .version src-tauri/tauri.conf.json)
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME doesn't match version $version in tauri.conf.json" >&2
+            exit 1
+          fi
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-binstall
+
+      - name: Install the Tauri CLI
+        run: cargo binstall -y tauri-cli@^2
+
+      - name: Run tests
+        working-directory: src-tauri
+        run: cargo test --release --lib
+
+      - name: Build
+        working-directory: src-tauri
+        run: cargo tauri build --bundles nsis
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir dist
+          cp src-tauri/target/release/bundle/nsis/*-setup.exe "dist/Audio-Splitter-$VERSION-setup.exe"
+          cp src-tauri/target/release/audio-splitter.exe "dist/Audio-Splitter-$VERSION-portable.exe"
+          cat > notes.md <<EOF
+          **Downloads**
+
+          - \`Audio-Splitter-$VERSION-setup.exe\`: installs the app and adds it to the Start menu.
+          - \`Audio-Splitter-$VERSION-portable.exe\`: runs without installing.
+
+          The files aren't code-signed, so Windows SmartScreen may warn the first time. Click **More info**, then **Run anyway**.
+          EOF
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --title "Audio Splitter $VERSION" \
+            --notes-file notes.md \
+            --generate-notes

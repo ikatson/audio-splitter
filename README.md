@@ -22,6 +22,15 @@ For two languages, the app reads the audio tracks of the video open in mpv and s
 
 The window also shows a live frequency spectrum of the sound.
 
+## Download
+
+Get the latest version from [Releases](https://github.com/ikatson/audio-splitter/releases/latest):
+
+- **`Audio-Splitter-<version>-setup.exe`:** installs the app and adds it to the Start menu.
+- **`Audio-Splitter-<version>-portable.exe`:** a single file that runs without installing.
+
+The files aren't code-signed, so Windows SmartScreen may warn the first time you run one. Click **More info**, then **Run anyway**.
+
 ## Requirements
 
 - Windows 10 or 11
@@ -45,10 +54,10 @@ cargo install tauri-cli --version "^2"
 
 ```bash
 cd src-tauri
-cargo tauri build --no-bundle
+cargo tauri build
 ```
 
-The app is built at `src-tauri/target/release/audio-splitter.exe`.
+The app is built at `src-tauri/target/release/audio-splitter.exe`, and the installer in `src-tauri/target/release/bundle/nsis`. Add `--no-bundle` to skip the installer.
 
 ## Usage
 
@@ -102,3 +111,15 @@ Checks on real devices:
 
 - `examples/e2e.rs` checks the audio copying path. It plays a quiet test tone that can be audible, so choose devices that aren't routed to speakers.
 - `examples/follow_sync.rs` measures how closely a hidden mpv follows the main one through play, seek, pause and speed changes, silently. Its doc comment explains how to run it.
+
+### Releasing
+
+1. Update `version` in `src-tauri/tauri.conf.json` and `src-tauri/Cargo.toml`.
+2. Commit, then push a matching tag:
+
+   ```bash
+   git tag v0.2.0
+   git push origin v0.2.0
+   ```
+
+GitHub Actions then runs the tests, builds the installer and the portable exe, and publishes them as a release.
