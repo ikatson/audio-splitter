@@ -4,6 +4,8 @@ A small Windows app that plays your computer's sound on more than one pair of he
 
 Windows plays sound on one device at a time. If two people want to watch a movie on one computer with their own headphones, only one of them hears it. Audio Splitter fixes that.
 
+<img src="docs/screenshot.jpg" alt="Audio Splitter sending sound from one pair of headphones to a second pair, with audio track pickers for a video playing in mpv and a frequency spectrum" width="474">
+
 ## What it's for
 
 - **Watching together with two pairs of headphones:** you and a friend watch a movie or a show late at night without disturbing anyone. Both of you hear everything the computer plays.
@@ -24,6 +26,14 @@ The window also shows a live frequency spectrum of the sound.
 
 - Windows 10 or 11
 - For a different track per listener: mpv, available as `mpv` on the `PATH`
+
+### Headphones
+
+Any headphones or speakers that Windows lists as a sound output work: wired, USB or Bluetooth, and any brand. Each pair needs its own connection to the computer, so two wired pairs need two outputs, such as the headphone jack and a USB headset or USB sound adapter.
+
+- **Bluetooth:** most computers can connect two Bluetooth headphones at once, but some adapters struggle, which shows up as dropouts. A USB headset with its own wireless dongle avoids this. Bluetooth headphones also add their own delay. When copying the source, a Bluetooth output lags a wired one, which is easier to notice with two Bluetooth pairs of different models.
+- **Headsets with a microphone:** while an app uses the microphone, Windows can switch a Bluetooth headset to low-quality call audio. Close apps that use the microphone, such as Discord or Teams, or choose the headset's stereo output if Windows lists it separately.
+- **Two identical models:** both pairs get the same name in Windows, so you can't tell them apart in the app. Give one a different name in **Settings → System → Sound**, under the device's properties.
 
 To build it, you also need Rust and the Tauri CLI:
 
