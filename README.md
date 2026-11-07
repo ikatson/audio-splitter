@@ -4,7 +4,7 @@ A small Windows app that plays your computer's sound on more than one pair of he
 
 Windows plays sound on one device at a time. If two people want to watch a movie on one computer with their own headphones, only one of them hears it. Audio Splitter fixes that.
 
-<img src="docs/screenshot.jpg" alt="Audio Splitter sending sound from one pair of headphones to a second pair, with audio track pickers for a video playing in mpv and a frequency spectrum" width="474">
+<img src="docs/screenshot.png" alt="Audio Splitter sending sound from one pair of headphones to a second pair, with audio track pickers for a video playing in mpv and a frequency spectrum" width="520">
 
 ## What it's for
 
