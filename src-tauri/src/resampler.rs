@@ -150,7 +150,12 @@ mod tests {
 
     #[test]
     fn converts_common_rates_cleanly() {
-        for (from, to) in [(48000.0, 48000.0), (44100.0, 48000.0), (48000.0, 44100.0), (96000.0, 48000.0)] {
+        for (from, to) in [
+            (48000.0, 48000.0),
+            (44100.0, 48000.0),
+            (48000.0, 44100.0),
+            (96000.0, 48000.0),
+        ] {
             let snr = snr_db(from, to, 1000.0);
             assert!(snr > 70.0, "{from} -> {to}: {snr:.1} dB");
         }

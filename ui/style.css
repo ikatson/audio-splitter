@@ -46,9 +46,16 @@ body {
 main { flex: none; width: 100%; max-width: 560px; margin: 0 auto; padding: 20px 20px 8px; }
 #spectrum { flex: 1; display: block; width: 100%; min-height: 0; padding: 0 12px; }
 
-label { display: block; margin-top: 16px; }
-label:first-child { margin-top: 0; }
-label span { display: block; margin-bottom: 4px; font-weight: 600; }
+.field { margin-top: 16px; }
+.field:first-child { margin-top: 0; }
+.field > label { display: block; margin-bottom: 4px; font-weight: 600; }
+
+.mpv { margin-top: 16px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; }
+.mpv h2 { margin: 0 0 4px; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mpv h2 span { font-weight: normal; color: var(--muted); }
+.mpv-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.mpv-row label { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mpv-row select { flex: none; width: 55%; }
 
 select, button {
   font: inherit;

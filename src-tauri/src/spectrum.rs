@@ -56,7 +56,10 @@ impl Analyzer {
             let skip = available - keep;
             self.samples.copy_within(keep.., 0);
             let start = FFT_SIZE - keep;
-            for (slot, sample) in self.samples[start..].iter_mut().zip(chunk.into_iter().skip(skip)) {
+            for (slot, sample) in self.samples[start..]
+                .iter_mut()
+                .zip(chunk.into_iter().skip(skip))
+            {
                 *slot = sample;
             }
         }
@@ -69,7 +72,12 @@ impl Analyzer {
             return vec![0.0; BANDS];
         }
 
-        for ((bin, sample), w) in self.spectrum.iter_mut().zip(&self.samples).zip(&self.window) {
+        for ((bin, sample), w) in self
+            .spectrum
+            .iter_mut()
+            .zip(&self.samples)
+            .zip(&self.window)
+        {
             *bin = Complex::new(sample * w, 0.0);
         }
         self.fft.process(&mut self.spectrum);
@@ -96,7 +104,8 @@ impl Analyzer {
                         .fold(0.0, f32::max)
                 };
                 let center_hz = (low * high).sqrt();
-                let db = 20.0 * level.max(1e-7).log10() + TILT_DB_PER_OCTAVE * (center_hz / 1000.0).log2();
+                let db = 20.0 * level.max(1e-7).log10()
+                    + TILT_DB_PER_OCTAVE * (center_hz / 1000.0).log2();
                 ((db - FLOOR_DB) / (CEILING_DB - FLOOR_DB)).clamp(0.0, 1.0)
             })
             .collect()
@@ -116,13 +125,20 @@ mod tests {
         for hz in [100.0f32, 1000.0, 8000.0] {
             for i in 0..FFT_SIZE {
                 let t = i as f32 / rate;
-                producer.push((std::f32::consts::TAU * hz * t).sin() * 0.25).unwrap();
+                producer
+                    .push((std::f32::consts::TAU * hz * t).sin() * 0.25)
+                    .unwrap();
             }
             let bands = analyzer.bands();
-            let loudest = (0..BANDS).max_by(|a, b| bands[*a].total_cmp(&bands[*b])).unwrap();
+            let loudest = (0..BANDS)
+                .max_by(|a, b| bands[*a].total_cmp(&bands[*b]))
+                .unwrap();
             let step = (MAX_HZ / MIN_HZ).powf(1.0 / BANDS as f32);
             let center = MIN_HZ * step.powf(loudest as f32 + 0.5);
-            assert!((center / hz).log2().abs() < 0.3, "{hz} Hz showed at {center} Hz");
+            assert!(
+                (center / hz).log2().abs() < 0.3,
+                "{hz} Hz showed at {center} Hz"
+            );
             assert!(bands[loudest] > 0.5);
         }
     }

@@ -8,30 +8,37 @@
 </head>
 <body>
   <main>
-    <label>
-      <span>Virtual output (set this as the Windows output)</span>
+    <div class="field">
+      <label for="source">Source (set this as the Windows output)</label>
       <select id="source"></select>
-    </label>
+      <p class="info">Plays as usual. If it's one of your headphones, choose only the other ones below.</p>
+    </div>
 
-    <label>
-      <span>Output 1</span>
+    <div class="field">
+      <label for="out1">Output 1</label>
       <select id="out1"></select>
-    </label>
-    <div class="gain">
-      <input id="out1-gain" type="range" min="-40" max="12" step="1" value="0" aria-label="Output 1 volume">
-      <output id="out1-gain-label" for="out1-gain">0 dB</output>
+      <div class="gain">
+        <input id="out1-gain" type="range" min="-40" max="12" step="1" value="0" aria-label="Output 1 volume">
+        <output id="out1-gain-label" for="out1-gain">0 dB</output>
+      </div>
+      <p id="out1-info" class="info"></p>
     </div>
-    <p id="out1-info" class="info"></p>
 
-    <label>
-      <span>Output 2</span>
+    <div class="field">
+      <label for="out2">Output 2</label>
       <select id="out2"></select>
-    </label>
-    <div class="gain">
-      <input id="out2-gain" type="range" min="-40" max="12" step="1" value="0" aria-label="Output 2 volume">
-      <output id="out2-gain-label" for="out2-gain">0 dB</output>
+      <div class="gain">
+        <input id="out2-gain" type="range" min="-40" max="12" step="1" value="0" aria-label="Output 2 volume">
+        <output id="out2-gain-label" for="out2-gain">0 dB</output>
+      </div>
+      <p id="out2-info" class="info"></p>
     </div>
-    <p id="out2-info" class="info"></p>
+
+    <section id="mpv" class="mpv" hidden>
+      <h2>mpv audio tracks <span id="mpv-title"></span></h2>
+      <div id="mpv-rows"></div>
+      <p id="mpv-note" class="info"></p>
+    </section>
 
     <div class="actions">
       <button id="toggle" class="primary">Start</button>

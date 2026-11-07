@@ -184,7 +184,13 @@ struct Pump {
 }
 
 impl Pump {
-    fn new(consumer: Consumer<f32>, channels: usize, src_rate: u32, out_rate: u32, shared: Arc<Shared>) -> Self {
+    fn new(
+        consumer: Consumer<f32>,
+        channels: usize,
+        src_rate: u32,
+        out_rate: u32,
+        shared: Arc<Shared>,
+    ) -> Self {
         let (src_rate, out_rate) = (src_rate as f64, out_rate as f64);
         Self {
             consumer,
@@ -217,7 +223,8 @@ impl Pump {
             self.buffering = false;
             if self.has_played && (self.gap_frames as f64) < GLITCH_GAP_S * self.out_rate {
                 self.shared.glitches.fetch_add(1, Relaxed);
-                self.target = (self.target + LATENCY_STEP_S * self.src_rate).min(MAX_LATENCY_S * self.src_rate);
+                self.target = (self.target + LATENCY_STEP_S * self.src_rate)
+                    .min(MAX_LATENCY_S * self.src_rate);
             }
             self.has_played = true;
             self.fill = available;
@@ -266,7 +273,9 @@ impl Pump {
         }
 
         let latency_s = self.fill / self.src_rate;
-        self.shared.latency_us.store((latency_s * 1e6) as u32, Relaxed);
+        self.shared
+            .latency_us
+            .store((latency_s * 1e6) as u32, Relaxed);
     }
 }
 
@@ -317,7 +326,9 @@ impl Engine {
             return Err("Choose at least one output.".into());
         }
         if output_configs.iter().any(|output| output.id == source_id) {
-            return Err("An output can't be the same as the source: it would feed back into itself.".into());
+            return Err(
+                "An output can't be the same as the source: it would feed back into itself.".into(),
+            );
         }
         if output_configs.len() == 2 && output_configs[0].id == output_configs[1].id {
             return Err("Choose two different outputs.".into());
@@ -345,7 +356,13 @@ impl Engine {
             let shared = Arc::new(Shared::default());
             shared.set_gain(output.gain);
             let (producer, consumer) = RingBuffer::new(src_rate as usize * channels);
-            let mut pump = Pump::new(consumer, channels, src_rate, config.sample_rate, shared.clone());
+            let mut pump = Pump::new(
+                consumer,
+                channels,
+                src_rate,
+                config.sample_rate,
+                shared.clone(),
+            );
             let on_error = shared.clone();
             let stream = device
                 .build_output_stream::<f32, _, _>(
@@ -384,14 +401,17 @@ impl Engine {
                             sink.push_frame(frame);
                         }
                         // When nobody is reading (hidden window), the analyzer simply misses audio.
-                        let _ = analyzer_input.push(frame.iter().sum::<f32>() / src_channels as f32);
+                        let _ =
+                            analyzer_input.push(frame.iter().sum::<f32>() / src_channels as f32);
                     }
                 },
                 move |e| on_error.on_stream_error(e),
                 Some(OPEN_TIMEOUT),
             )
             .map_err(|e| format!("{source_device}: {e}"))?;
-        capture.play().map_err(|e| format!("{source_device}: {e}"))?;
+        capture
+            .play()
+            .map_err(|e| format!("{source_device}: {e}"))?;
 
         let mut streams = vec![capture];
         streams.append(&mut output_streams);
@@ -533,6 +553,9 @@ mod tests {
         assert_eq!(pump.shared.dropped_frames.load(Relaxed), 0);
         assert_eq!(pump.shared.glitches.load(Relaxed), 0);
         let settled = pump.fill / pump.src_rate;
-        assert!((settled - INITIAL_LATENCY_S).abs() < 0.01, "settled at {settled}");
+        assert!(
+            (settled - INITIAL_LATENCY_S).abs() < 0.01,
+            "settled at {settled}"
+        );
     }
 }

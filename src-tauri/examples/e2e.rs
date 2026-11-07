@@ -28,7 +28,10 @@ fn main() {
     let devices = list_devices().unwrap().outputs;
     let find = |needle: &String| -> String {
         let found = devices.iter().find(|d| d.name.contains(needle.as_str()));
-        found.unwrap_or_else(|| panic!("no device matching {needle}")).id.clone()
+        found
+            .unwrap_or_else(|| panic!("no device matching {needle}"))
+            .id
+            .clone()
     };
     let source = find(&args[0]);
     let outputs: Vec<String> = args[1..].iter().map(find).collect();
@@ -55,7 +58,10 @@ fn main() {
     probe.play().unwrap();
     std::thread::sleep(Duration::from_secs(3));
     drop(probe);
-    println!("background peak before tone: {:.5}", background.lock().unwrap());
+    println!(
+        "background peak before tone: {:.5}",
+        background.lock().unwrap()
+    );
 
     let mut n = 0u64;
     let tone = source_device
@@ -77,7 +83,10 @@ fn main() {
     let configs: Vec<OutputConfig> = outputs
         .iter()
         .enumerate()
-        .map(|(i, id)| OutputConfig { id: id.clone(), gain: if i == 0 { 0.5 } else { 1.0 } })
+        .map(|(i, id)| OutputConfig {
+            id: id.clone(),
+            gain: if i == 0 { 0.5 } else { 1.0 },
+        })
         .collect();
     let mut engine = Engine::start(&source, &configs).unwrap();
 
@@ -106,8 +115,14 @@ fn main() {
     std::thread::sleep(Duration::from_secs(SECONDS));
     let status = engine.status();
     let bands = engine.spectrum();
-    let loudest = (0..bands.len()).max_by(|a, b| bands[*a].total_cmp(&bands[*b])).unwrap();
-    println!("spectrum: {} bands, loudest is #{loudest} at {:.2}", bands.len(), bands[loudest]);
+    let loudest = (0..bands.len())
+        .max_by(|a, b| bands[*a].total_cmp(&bands[*b]))
+        .unwrap();
+    println!(
+        "spectrum: {} bands, loudest is #{loudest} at {:.2}",
+        bands.len(),
+        bands[loudest]
+    );
     // Snapshot before stopping, so the silence after the engine stops isn't analysed.
     let recordings: Vec<(Vec<f32>, usize)> = listeners
         .iter()
